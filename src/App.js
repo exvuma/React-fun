@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Routes } from './Routes'
-var transportConstants = {
+var transportConstants = [
+  {type:"Bike", "score": "800"}, {type:"Drive", "score": "80"}
+]
 
-}
 
 class App extends Component {
   constructor(props){
@@ -12,21 +13,23 @@ class App extends Component {
     this.state = {
       routes: [],
     }
+  //  this.populateRoutes(transportConstants)
 
+  }
+  componentDidMount(trans){
+     this.populateRoutes(transportConstants)
   }
   handleClick = ()=> {
     console.log(this)
   }
   populateRoutes(transportConstants){
-    var routes = this.state.routes || {}
-    routes.push([ <Routes type = "Bike" score="010" key="someid"/>
-
-      ])
+    // var routes = this.state.routes || {}
+    this.setState({ routes:transportConstants})
   }
 
   render() {
     //returns JSX
-    this.populateRoutes(transportConstants)
+   // this.populateRoutes(transportConstants)
     return (
       <div className="App">
         <h1>Routes</h1>
