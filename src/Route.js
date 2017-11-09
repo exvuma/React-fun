@@ -20,7 +20,8 @@ export class Route extends Component {
             selected : false,
             score: 0,
             weather: 0,
-            time: 0
+            duration: 0,
+            wakeuptime: new Date()
           }
 
     }
@@ -31,7 +32,7 @@ export class Route extends Component {
         this.icon = routeIconKeys[this.props.type]
     }
     handleWeatherClick= () =>{//
-        var newscore = this.calculateScore(this.state.time, this.state.weather )
+        var newscore = this.calculateScore(this.state.duration, this.state.weather )
         this.setState({
                 weather: this.state.weather + 1,
                 score : newscore
@@ -43,7 +44,7 @@ export class Route extends Component {
 
     }
     handlePerferenceChange= () =>{//
-        var newscore = this.calculateScore(this.state.time, this.state.weather )
+        var newscore = this.calculateScore(this.state.duration, this.state.weather )
         this.setState({
                 weather: this.state.weather + 1,
                 score : newscore
@@ -57,8 +58,8 @@ export class Route extends Component {
     getInitialState =() => {
         return {score:0, selected: false}
     }
-    calculateScore = ( time, weather ) => {
-        return parseInt(time * .2 + weather*.7)
+    calculateScore = ( duration, weather ) => {
+        return parseInt(duration * .2 + weather*.7)
      }
     componentWillUpdate(){
         
@@ -83,7 +84,12 @@ export class Route extends Component {
 export class RouteList extends React.Component {
   onhandleClick = () => {
   }
-  render()    { return (
+  setTimer = () => {
+    // 
+  }
+  render()    { 
+
+    return (
       <div className="routes">
         {this.props.routes.map(route => {
           return(
