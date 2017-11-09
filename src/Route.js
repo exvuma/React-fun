@@ -1,10 +1,18 @@
 // This is more complex example that uses two components -
 // a service chooser form, and the individual services inside it.
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import weatherbutton from './weatherbutton.svg';
+import logo from './icons/logo.svg';
+import weatherbutton from './icons/weatherbutton.svg';
+import walk from './icons/Walk.svg';
+import bike from './icons/Bike.svg';
+// import walk from './icons/Walk.svg';
+// import walk from './icons/Walk.svg';
 import './App.css';
 
+var routeIconKeys = {
+  walk: walk,
+  bike: bike,
+}
 export class Route extends Component {
     constructor(props){
         super(props)
@@ -16,14 +24,25 @@ export class Route extends Component {
           }
 
     }
-    giveScore = ()=>{
-      console.log(this.state.score)
-      return this.state.score
-    }
     handleClick = ()=> {
-        console.log(this.state)
+    
+    }
+    getMyIcon = () =>{
+        this.icon = routeIconKeys[this.props.type]
     }
     handleWeatherClick= () =>{//
+        var newscore = this.calculateScore(this.state.time, this.state.weather )
+        this.setState({
+                weather: this.state.weather + 1,
+                score : newscore
+            })
+        //where the magic happens, this calls that calculateMax function that has 
+        // been passed into props since App
+        // then in App.js that calculateMax feature calls setState
+        this.props.calculateMax(this.state.score, this.props.type)
+
+    }
+    handlePerferenceChange= () =>{//
         var newscore = this.calculateScore(this.state.time, this.state.weather )
         this.setState({
                 weather: this.state.weather + 1,
@@ -39,49 +58,29 @@ export class Route extends Component {
         return {score:0, selected: false}
     }
     calculateScore = ( time, weather ) => {
-        return time * .2 + weather*.7
-        // this.setState( { score: score  } );
+        return parseInt(time * .2 + weather*.7)
      }
     componentWillUpdate(){
-        console.log("componentDidUpdate")
+        
     }
     render() {
-     if (this.state.selected ==true ){console.log ('this state is active')}
+      this.getMyIcon()
      return (
-
       <div className="Route">
-          <img src={weatherbutton} className="App-logo" alt="logo" onClick={this.handleWeatherClick}  />
-           <img src={logo} className="App-logo" alt="logo" onClick={this.handleClick} calculateMax={this.props.calculateMax} />
+          <img src={weatherbutton} onClick={this.handleWeatherClick}  />
+           <img src={logo} className="App-logo" alt="logo"  />
           {this.props.type} My Score: {this.props.score}
+          <img src={routeIconKeys[this.props.type]} className="App-icon"   />
 
       </div>
     );
   }
 
 }
-export class MaxRoute extends Component {
-        constructor(props){
-        super(props)
-        this.state = {
-            selected : false,
-            score: 0,
-            weather: 0,
-            time: 0,
-            origRoute: []
-          }
-
-    }
-    render(){
-        return <div>{this.state.score}</div>
-    }
-}
 export class RouteList extends React.Component {
   onhandleClick = () => {
-    console.log("route list handler")
   }
-  render() {
-    console.log(this.props)
-    return (
+  render()    { return (
       <div className="routes-list">
         {this.props.routes.map(route => {
           return(
