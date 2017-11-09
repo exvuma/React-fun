@@ -65,15 +65,18 @@ export class Route extends Component {
     }
     render() {
       this.getMyIcon()
+      var iconString =  "route-icon route-icon-" + this.props.type
      return (
-      <div className="Route">
-          <img src={weatherbutton} onClick={this.handleWeatherClick}  />
-           <img src={logo} className="App-logo" alt="logo"  />
-          {this.props.type} My Score: {this.props.score}
-          <img src={routeIconKeys[this.props.type]} className="App-icon"   />
+      <div className="route">
+        <div className={iconString} onClick={this.handleWeatherClick} ></div>
+        <div className="route-title">{this.props.type}</div>
+        <div className="route-icon route-icon-best"></div>
+        <div className="route-icon route-icon-chevron"></div>
+        <div className="route-title">My Score: {this.props.score}</div>
 
       </div>
     );
+        // <img src={routeIconKeys[this.props.type]} className="App-icon"   />
   }
 
 }
@@ -81,7 +84,7 @@ export class RouteList extends React.Component {
   onhandleClick = () => {
   }
   render()    { return (
-      <div className="routes-list">
+      <div className="routes">
         {this.props.routes.map(route => {
           return(
             <Route

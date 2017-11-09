@@ -52,18 +52,18 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>Route</h1>
-        <RouteList 
-          routes={this.state.routes} 
-          onClick={this.handleClick} 
-          calculateMax={this.calculateMax}
-        />
         <h1> Best Route </h1>
         <Route 
           type={this.state.maxRoute.type} 
           score={this.state.maxRoute.score}
           calculateMax={this.calculateMax}
          />
+        <h1>Other Routes</h1>
+        <RouteList 
+          routes={this.state.routes} 
+          onClick={this.handleClick} 
+          calculateMax={this.calculateMax}
+        />
       </div>
 
     );
