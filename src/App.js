@@ -23,18 +23,12 @@ class App extends Component {
      this.populateRoute(transportConstants)
   }
     componentWillUpdate(){
-        console.log("App DidUpdate")
     let max = this.state.routes.reduce((prevRoute, curRoute) => {
           return ((prevRoute.score > curRoute.score) ? prevRoute : curRoute)
         }, this.state.routes[0])
-    console.log("routes")
-    console.log(this.state.routes)
-    // this.setState({ 
-    //   maxRoute: max
-    // })
+
     }
   handleClick = ()=> {
-    console.log(this)
     let max = this.state.routes.reduce((prevRoute, curRoute) => {
       return ((prevRoute.score > curRoute.score) ? prevRoute : curRoute)
     }, this.state.routes[0])
@@ -43,16 +37,22 @@ class App extends Component {
       maxRoute: max
     })
   }
-  calculateMax = (updatedRoute)=> {
-    var newRoutes = this.routes
+  calculateMax = (score,type)=> {
+    var newRoutes = this.state.routes.map(route => {
+      if(route.type !== type) return route
+        return{type: type, score: score}
+    })
     //newRoutes.pop(updatedRoute)
-    newRoutes[updatedRoute.keys()[0]] = updatedRoute.values()[0]
-    let max = this.state.routes.reduce((prevRoute, curRoute) => {
+    console.log("calculateMax line 43")
+    console.log(newRoutes)
+
+    // newRoutes.pop(type) = updatedRoute.values()[0]
+    let max = newRoutes.reduce((prevRoute, curRoute) => {
       return ((prevRoute.score > curRoute.score) ? prevRoute : curRoute)
     }, this.state.routes[0])
-    setState({
+    this.setState({
       routes: newRoutes,
-      max: max
+      maxRoute: max
     })
   }
   // updateListClick = () =>{
@@ -64,11 +64,6 @@ class App extends Component {
   //   })
   // }
   populateRoute(transportConstants){
-    // var routes = this.state.routes || {}
-    // let routes = transportConstants.map(route => {
-    //      // return route
-    //      return ( <Route type={route.type}/>)
-    //     })
     let routes = transportConstants.map(route => {
           return route
          //let newroute = React.createElement(Route({type:"asdasd"}))
@@ -82,31 +77,21 @@ class App extends Component {
     this.setState({ 
       routes: routes,
       maxRoute: max,
-      //otherroutes: otherroutes
     })
   }
 
   render() {
-    //returns JSX
-    console.log("mac route")
-    console.log(this.state.maxRoute)
-   // this.populateRoute(transportConstants)
-   // var maxRoute = this.state.routes.reduce((prevRoute, curRoute) => {
-   //    return ((prevRoute.score > curRoute.score) ? prevRoute : curRoute)
-   //  }, this.state.routes[0]) || {"type": "NA"}
    var maxRoute = this.state.routes[0]|| {"type": "NA"}
    console.log("kids")
-   // console.log( this.props.children)
-   // console.log(maxRoute)
    const bestRoute = this.state.routes.sort((a, b) => a.score > b.score ? 1 : -1, this.state.routes[0])[0]
    if (bestRoute)
     console.log(bestRoute)
     return (
       <div className="App">
         <h1>Route</h1>
-        <RouteList routes={this.state.routes} onClick={this.handleClick}/>
+        <RouteList routes={this.state.routes} onClick={this.handleClick} calculateMax={this.calculateMax}/>
         <h1> Best Route </h1>
-          <MaxRoute type={maxRoute.type} score={maxRoute.state} key={maxRoute.id} maxProp={maxRoute.props} />
+        <Route type={this.state.maxRoute.type} score={this.state.maxRoute.score} />
       <button onClick={this.handleClick}>Update Max</button>
       </div>
 

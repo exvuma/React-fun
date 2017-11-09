@@ -14,7 +14,6 @@ export class Route extends Component {
             weather: 0,
             time: 0
           }
-        this.score = 0
 
     }
     giveScore = ()=>{
@@ -22,7 +21,7 @@ export class Route extends Component {
       return this.state.score
     }
     handleClick = ()=> {
-             console.log(this)
+        console.log(this.state)
     }
     handleWeatherClick= () =>{//
         var newscore = this.calculateScore(this.state.time, this.state.weather )
@@ -30,7 +29,10 @@ export class Route extends Component {
                 weather: this.state.weather + 1,
                 score : newscore
             })
-        this.score = newscore
+        //where the magic happens, this calls that calculateMax function that has 
+        // been passed into props since App
+        // then in App.js that calculateMax feature calls setState
+        this.props.calculateMax(this.state.score, this.props.type)
 
     }
     getInitialState =() => {
@@ -49,8 +51,8 @@ export class Route extends Component {
 
       <div className="Route">
           <img src={weatherbutton} className="App-logo" alt="logo" onClick={this.handleWeatherClick}  />
-           <img src={logo} className="App-logo" alt="logo" onClick={this.props.onClick}  />
-          {this.props.type} My Score: {this.state.score}
+           <img src={logo} className="App-logo" alt="logo" onClick={this.handleClick} calculateMax={this.props.calculateMax} />
+          {this.props.type} My Score: {this.props.score}
 
       </div>
     );
@@ -82,99 +84,18 @@ export class RouteList extends React.Component {
     return (
       <div className="routes-list">
         {this.props.routes.map(route => {
-          // var score = route.getScore()
-          return <Route type={route.type} key={route.id} onClick={this.props.onClick}/>
+          return(
+            <Route
+                type = { route.type }
+                key = { route.id }
+                onClick = { this.props.onClick }
+                calculateMax = { this.props.calculateMax }
+                score = { route.score }
+            />)
         })}
       </div>
     )
   }
 }
-// export  Route;
-
-// var ServiceChooser = React.createClass({
-
-//     getInitialState: function(){
-//         return { total: 0 };
-//     },
-
-//     addTotal: function( price ){
-//         this.setState( { total: this.state.total + price } );
-//     },
-
-//     render: function() {
-
-//         var self = this;
-
-//         var services = this.props.items.map(function(s){
-
-//             // Create a new Service component for each item in the items array.
-//             // Notice that I pass the self.addTotal function to the component.
-
-//             return <Service name={s.name} price={s.price} active={s.active} addTotal={self.addTotal} />;
-//         });
-
-//         return <div>
-//                     <h1>Our services</h1>
-                    
-//                     <div id="services">
-//                         {services}
-
-//                         <p id="total">Total <b>${this.state.total.toFixed(2)}</b></p>
-
-//                     </div>
-
-//                 </div>;
-
-//     }
-// });
-
-
-// var Service = React.createClass({
-
-//     getInitialState: function(){
-//         return { active: false };
-//     },
-
-//     clickHandler: function (){
-
-//         var active = !this.state.active;
-
-//         this.setState({ active: active });
-        
-//         // Notify the ServiceChooser, by calling its addTotal method
-//         this.props.addTotal( active ? this.props.price : -this.props.price );
-
-//     },
-
-//     render: function(){
-
-//         return  <p className={ this.state.active ? 'active' : '' } onClick={this.clickHandler}>
-//                     {this.props.name} <b>${this.props.price.toFixed(2)}</b>
-//                 </p>;
-
-//     }
-
-// });
-
-
-// var services = [
-//     { name: 'Web Development', price: 300 },
-//     { name: 'Design', price: 400 },
-//     { name: 'Integration', price: 250 },
-//     { name: 'Training', price: 220 }
-// ];
-
-
-// // Render the ServiceChooser component, and pass the array of services
-
-// ReactDOM.render(
-//     <ServiceChooser items={ services } />,
-//     document.getElementById('container')
-// );
-
-
-// <Route score={50} type="walking" />
-// <Route score={110} type="biking" />
-// <Route score={25} type="driving" />
 
 
