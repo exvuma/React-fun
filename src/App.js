@@ -19,9 +19,10 @@ class App extends Component {
     }
 
   }
-  changePage(newPage){
+  changePage(newPage, inputs){
     this.setState({
       currPage:newPage,
+      lastPageInputs: inputs
     })
     
   }
@@ -32,7 +33,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <this.state.currPage changePage={this.changePage.bind(this)}/>
+        <this.state.currPage changePage={this.changePage.bind(this)} inputs={this.state.lastPageInputs}/>
       </div>
 
     );

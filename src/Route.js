@@ -18,9 +18,9 @@ export class Route extends Component {
         super(props)
         this.state = {
             selected : false,
-            score: 0,
+            score: this.props.score || 22 ,
             weather: 0,
-            duration: 0,
+            duration: this.props.duration || 22,
             wakeuptime: new Date()
           }
 
@@ -31,49 +31,53 @@ export class Route extends Component {
     getMyIcon = () =>{
         this.icon = routeIconKeys[this.props.type]
     }
-    handleWeatherClick= () =>{//
-        var newscore = this.calculateScore(this.state.duration, this.state.weather )
-        this.setState({
-                weather: this.state.weather + 1,
-                score : newscore
-            })
-        //where the magic happens, this calls that calculateMax function that has 
-        // been passed into props since App
-        // then in App.js that calculateMax feature calls setState
-        this.props.calculateMax(this.state.score, this.props.type)
+    // handleWeatherClick= () =>{//
+    //     var newscore = this.calculateScore(this.state.duration, this.state.weather )
+    //     this.setState({
+    //             weather: this.state.weather + 1,
+    //             score : newscore
+    //         })
+    //     //where the magic happens, this calls that updateRoutes function that has 
+    //     // been passed into props since App
+    //     // then in App.js that updateRoutes feature calls setState
+    //     this.props.updateRoutes(this.state, this.props.type)
 
-    }
-    handlePerferenceChange= () =>{//
-        var newscore = this.calculateScore(this.state.duration, this.state.weather )
-        this.setState({
-                weather: this.state.weather + 1,
-                score : newscore
-            })
-        //where the magic happens, this calls that calculateMax function that has 
-        // been passed into props since App
-        // then in App.js that calculateMax feature calls setState
-        this.props.calculateMax(this.state.score, this.props.type)
+    // }
 
-    }
     getInitialState =() => {
         return {score:0, selected: false}
     }
     calculateScore = ( duration, weather ) => {
-        return parseInt(duration * .2 + weather*.7)
+      var newscore = parseInt(duration * .2 + weather*.7)
+      console.log(newscore)
+      this.setState({
+        score: newscore
+      })
+        return newscore
+
      }
-    componentWillUpdate(){
+    componentWillMount(){
+        //  this.calculateScore(this.state.duration, this.state.weather)
+          this.props.updateRoutes(this.state, this.props.type)
         
+        console.log("route mounting")
+     }
+    componentDidMount(){
+       console.log("route did mounting")
+    }
+    componentWillUpdate(){
+       // this.props.updateRoutes(this.state, this.props.type)
     }
     render() {
       this.getMyIcon()
       var iconString =  "route-icon route-icon-" + this.props.type
+      // var duration = this.props.duration ? this.props.duration : this.state.duration
      return (
       <div className="route">
         <div className={iconString} onClick={this.handleWeatherClick} ></div>
-        <div className="route-title">{this.props.type}</div>
         <div className="route-icon route-icon-best"></div>
         <div className="route-icon route-icon-chevron"></div>
-        <div className="route-title">My Score: {this.props.score}</div>
+        <div className="route-title">{this.props.duration} minutes</div>
 
       </div>
     );
@@ -97,8 +101,9 @@ export class RouteList extends React.Component {
                 type = { route.type }
                 key = { route.id }
                 onClick = { this.props.onClick }
-                calculateMax = { this.props.calculateMax }
-                score = { route.score }
+                updateRoutes = { this.props.updateRoutes }
+                score = { route.state.score }
+                duration = { route.state.duration }
             />)
         })}
       </div>
