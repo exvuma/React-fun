@@ -3,7 +3,7 @@ import logo from './icons/logo.svg';
 import './App.css';
 import { Route, MaxRoute, RouteList } from './Route'
 import { UserSettingsPage } from './UserSettingsPage'
-import {RoutesPage} from './RoutesPage'
+import { RoutesPage } from './RoutesPage'
 
 var transportConstants = [
   {type:"bike", "score": "0"},
@@ -14,8 +14,14 @@ class App extends Component {
   constructor(props){
     super(props)
     this.state = {
-      currPage: UserSettingsPage,
-      type: "bike"
+      currPage: RoutesPage,
+      type: "bike",
+      "lastPageInputs":{
+          getToWorkTime: "16:14",//new Date("October 13, 2014 11:13:00").getTime(),
+          wakeuptime: new Date(),
+          destination: "2900 manor rd. , 74722",
+          origin: "600 congress ave",
+      }
     }
 
   }
@@ -33,7 +39,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <this.state.currPage changePage={this.changePage.bind(this)} inputs={this.state.lastPageInputs}/>
+        <this.state.currPage
+         changePage={this.changePage.bind(this)}
+         inputs={this.state.lastPageInputs}/>
       </div>
 
     );

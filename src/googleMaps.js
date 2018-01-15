@@ -8,31 +8,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker, DirectionsRenderer } fr
 
 ///////////////////////////////////////////////////////////
 // https://tomchentw.github.io/react-google-maps/  ///////
-// export const MyMapsComponent = withScriptjs(withGoogleMap((props) =>
-//   <GoogleMap
-//     defaultZoom={8}
-//     defaultCenter={{ lat: -34.397, lng: 150.644 }}
-//   >
-//     {props.isMarkerShown && <Marker position={{ lat: -34.397, lng: 150.644 }} />}
-//   </GoogleMap>
-// ))
-export const MyMapsComponent = compose(
-  withProps({
-    googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places",
-    loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `400px` }} />,
-    mapElement: <div style={{ height: `100%` }} />,
-  }),
-  withScriptjs,
-  withGoogleMap
-)((props) =>
-  <GoogleMap
-    defaultZoom={8}
-    defaultCenter={{ lat: -34.397, lng: 150.644 }}
-  >
-    {props.isMarkerShown && <Marker position={{ lat: -34.397, lng: 150.644 }} />}
-  </GoogleMap>
-)
+
 
 export const DirectionsMapsComponent =  compose(
   withProps({
@@ -49,8 +25,7 @@ export const DirectionsMapsComponent =  compose(
       DirectionsService.route({
 		 origin: this.props.origin,
 		  destination:this.props.destination,
-
-        travelMode: google.maps.TravelMode.DRIVING,
+        travelMode: this.props.travelMode
       }, (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           this.setState({
@@ -70,6 +45,39 @@ export const DirectionsMapsComponent =  compose(
     {props.directions && <DirectionsRenderer directions={props.directions} />}
   </GoogleMap>
 );
+
+
+///////////////////////////////////////////////////////////
+// Understanding Compose ///////
+///////////////////////////////////////////////////////////
+// below is simple way of writing compose statement following this block
+// export const MyMapsComponent = withScriptjs(withGoogleMap((props) =>
+//   <GoogleMap
+//     defaultZoom={8}
+//     defaultCenter={{ lat: -34.397, lng: 150.644 }}
+//   >
+//     {props.isMarkerShown && <Marker position={{ lat: -34.397, lng: 150.644 }} />}
+//   </GoogleMap>
+// ))
+///////////////////////////////////////////////////////////
+// compose statement block
+// export const MyMapsComponent = compose(
+//   withProps({
+//     googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places",
+//     loadingElement: <div style={{ height: `100%` }} />,
+//     containerElement: <div style={{ height: `400px` }} />,
+//     mapElement: <div style={{ height: `100%` }} />,
+//   }),
+//   withScriptjs,
+//   withGoogleMap
+// )((props) =>
+//   <GoogleMap
+//     defaultZoom={8}
+//     defaultCenter={{ lat: -34.397, lng: 150.644 }}
+//   >
+//     {props.isMarkerShown && <Marker position={{ lat: -34.397, lng: 150.644 }} />}
+//   </GoogleMap>
+// )
 
 ///////////////////////////////////////////////////////////
 //https://www.npmjs.com/package/react-google-maps-temp///////
@@ -104,4 +112,3 @@ export const DirectionsMapsComponent =  compose(
 //   />,
 //   document.getElementById('root')
 // );
-	
