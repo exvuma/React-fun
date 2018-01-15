@@ -3,7 +3,7 @@ import logo from './icons/logo.svg';
 import './App.css';
 import { Route, MaxRoute, RouteList } from './Route'
 import { UserSettingsPage } from './UserSettingsPage'
-import { MyMapsComponent } from './googleMaps'
+import { MyMapsComponent, DirectionsMapsComponent } from './googleMaps'
 
 var transportConstants = [
   {type:"bike", "state": {"score": 20 , "duration": 12 }},
@@ -122,6 +122,15 @@ export class RoutesPage extends Component {
         loadingElement={<div style={{ height: `100%` }} />}
         containerElement={<div style={{ height: `400px` }} />}
         mapElement={<div style={{ height: `100%` }} />}
+        />
+      <DirectionsMapsComponent isMarkerShown={true}
+        isMarkerShown
+        googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+        loadingElement={<div style={{ height: `100%` }} />}
+        containerElement={<div style={{ height: `400px` }} />}
+        mapElement={<div style={{ height: `100%` }} />}
+        origin={this.props.inputs.origin}
+        destination={this.props.inputs.destination}
         />
       </div>
 
