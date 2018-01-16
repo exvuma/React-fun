@@ -38,62 +38,51 @@ export class RoutesPage extends Component {
     }
 
   }
-  getGoogleRoutes =  () =>{
-    // get Google routes for each transport constant
-   return transportConstants.map( async type => {
-        let dur = await this.getGoogleRoute(type)
-        return{
-          type: typeToMode,
-          state:{
-            duration: dur,
-            score: dur + 5
-            
-          }
-        }
-  })
-}
 
-    getGoogleRoute = async (type) =>{
-    try{
-      var URL = "https://maps.googleapis.com/maps/api/directions/json"
-      var params = new URLSearchParams({
-                    "key": myGoogleAPIkey,
-                    "origin": this.props.inputs.origin,
-                    "destination": this.props.inputs.destination,
-                    "arrival_time" : this.props.inputs.getToWorkTime,
-                    "mode": typeToMode[type]
-                   }).toString()
-      var headers = new Headers();
-      headers.append("Content-Type", "applications/json")
-      // headers.append('Access-Control-Allow-Headers', 'Content-Type, Origin, Content-Type, X-Auth-Token')
-      // headers.append("Access-Control-Allow-Origin", "*");
-      // headers.append("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE,OPTIONS');
-
-      // console.log(URL + params)
-      var thisURL = URL +'?' + params
-
-      const resp = await fetch(thisURL,{
-          headers: headers,
-      })
-      const text = await resp.text()
-      const dur = text.routes[0].legs[0].duration.value //TODO set try/catch if routes[0] DNE
-      // this.setState({
-      //       googleres: text,
-      //       duration: dur,
-      //     })
-      console.log("repsonse return")
-      console.log(text)
-      return text
-
-    }catch(err){
-      console.log("error get goolge results")
-      console.log(err)
-      return err
-    }
+  calculateScore = (duration) => {
+    // TODO calculate score off legit algorythm, potentially adding
+    // more variable later (e.g. preference for biking..)
+    return duration  + 10;
   }
+  getGoogleRoutes =  () => {
+    var directionsService = new google.maps.DirectionsService();
+    var origin = this.props.inputs.origin
+    var destination = this.props.inputs.destination
+    let promiseArr =  Promise.all(transportConstants.map(  (route) => {
+      var request = {
+        origin: origin,
+        destination: destination,
+        travelMode: typeToMode[route.type]
+      };
+      // turn directionsService.route into a new Promise that we can then explicity
+      // tell to resolve/reject. This way we can use Promise.all to ensure that 
+      // all those directionsService.routes are finished
+        var v =  new Promise((resolve, reject) => 
+          {
+             directionsService.route(request, (result, status) => {
+                  if (status == 'OK') {
+                    console.log("resyots!!")
+                    // return {type:route.type, "state": {"score": this.calculateScore(dur) , "duration": dur }}
+              
+                    let dur  = result.routes[0].legs[0].duration.value
+                    return resolve({type:route.type, "state": {"score": this.calculateScore(dur) , "duration": dur }})
+                  }
+                  else{
+                    console.log("error with Google")
+                    reject(result)
+                    throw("adsda")
+                    return  {type:"bike", "state": {"score": 20 , "duration": 12 }}
+                  }
+                })
+          })
+        return v
+    }))
+    return promiseArr
+}
   updateRoutes = (state,type)=> {
     //updates Routes with a new state of type = type
-    var newRoutes = this.state.routes.map(async route => {
+
+    var newRoutes = this.state.routes.map( route => {
       // replace only the route with this type
       if(route.type !== type) return route
  //       let result =  await this.getGoogleRoutes(type)

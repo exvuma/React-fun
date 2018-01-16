@@ -56,52 +56,14 @@ export class Route extends Component {
         return newscore
 
      }
-  //   getGoogleRoutes = async (type) =>{
-  //   try{
-  //     var URL = "https://maps.googleapis.com/maps/api/directions/json"
-  //     var params = new URLSearchParams({
-  //                   "key": myGoogleAPIkey,
-  //                   "origin": this.props.inputs.origin,
-  //                   "destination": this.props.inputs.destination,
-  //                   "arrival_time" : this.props.inputs.getToWorkTime,
-  //                   "mode": typeToMode[type]
-  //                  }).toString()
-  //     var headers = new Headers();
-  //     headers.append("Content-Type", "applications/json")
-  //     // headers.append('Access-Control-Allow-Headers', 'Content-Type, Origin, Content-Type, X-Auth-Token')
-  //     // headers.append("Access-Control-Allow-Origin", "*");
-  //     // headers.append("Access-Control-Allow-Methods", 'GET,PUT,POST,DELETE,OPTIONS');
-
-  //     // console.log(URL + params)
-  //     var thisURL = URL +'?' + params
-
-  //     const resp = await fetch(thisURL,{
-  //         headers: headers,
-  //     })
-  //     const text = await resp.text()
-  //     const dur = text.routes[0].legs[0].duration.value //TODO set try/catch if routes[0] DNE
-  //     this.setState({
-  //           googleres: text,
-  //           duration: dur,
-  //         })
-  //     console.log("repsonse return")
-  //     console.log(text)
-  //     return text
-
-  //   }catch(err){
-  //     console.log("error get goolge results")
-  //     console.log(err)
-
-  //   }
-  // }
     componentWillMount(){
-        //  this.calculateScore(this.state.duration, this.state.weather)
-          this.props.updateRoutes(this.state, this.props.type)
         
         console.log("route mounting")
      }
     componentDidMount(){
        console.log("route did mounting")
+        //  this.calculateScore(this.state.duration, this.state.weather)
+          this.props.updateRoutes(this.state, this.props.type)
     }
     componentWillUpdate(){
        // this.props.updateRoutes(this.state, this.props.type)
