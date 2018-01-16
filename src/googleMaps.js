@@ -24,7 +24,7 @@ export const DirectionsMapsComponent =  compose(
       const DirectionsService = new google.maps.DirectionsService();
       DirectionsService.route({
 		 origin: this.props.origin,
-		  destination:this.props.destination,
+		 destination:this.props.destination,
         travelMode: this.props.travelMode
       }, (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
@@ -40,7 +40,6 @@ export const DirectionsMapsComponent =  compose(
 )(props =>
   <GoogleMap
     defaultZoom={7}
-    defaultCenter={new google.maps.LatLng(41.8507300, -87.6512600)}
   >
     {props.directions && <DirectionsRenderer directions={props.directions} />}
   </GoogleMap>
