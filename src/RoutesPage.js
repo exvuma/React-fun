@@ -24,15 +24,18 @@ const typeToMode = {
 export class RoutesPage extends Component {
   constructor(props){
     super(props)
-   this.getGoogleRoutes().then((resp) => {      
-          this.setState(
-           { routes:resp.map(route => { return route})}
-          )
-        }
-    )
+    this.getGoogleRoutes()
+    .then((resp) => {      
+      this.setState(
+       { routes:resp.map(route => { return route})}
+      )
+    })
+    .catch((reason) => {
+      this.setState({
+        error: reason
+      })
+    })
     this.state = {
-      //routes: transportConstants.map(route => { 
-        //return route}),
       maxRoute: {
         type: "DRIVING",
         state: {
@@ -42,9 +45,7 @@ export class RoutesPage extends Component {
       googresp : ""
       }
     }
-
   }
-
   calculateScore = (duration) => {
     // TODO calculate score off legit algorythm, potentially adding
     // more variable later (e.g. preference for biking..)
@@ -77,21 +78,20 @@ export class RoutesPage extends Component {
                   else{
                     console.log("error with Google")
                     reject(result)
-                    throw("adsda")
                     return  {type:"bike", "state": {"score": 20 , "duration": 12 }}
                   }
                 })
           })
     }))
     return promiseArr
-}
+  }
   updateRoutes = (state,type)=> {
     //updates Routes with a new state of type = type
 
     var newRoutes = this.state.routes.map( route => {
       // replace only the route with this type
       if(route.type !== type) return route
-        return{type: type, state: state}
+      return{type: type, state: state}
     })
     let max = newRoutes.reduce((prevRoute, curRoute) => {
       return ((prevRoute.state.score > curRoute.state.score) ?
@@ -108,40 +108,44 @@ export class RoutesPage extends Component {
   }
 
   onBackClick = () => {
-    this.props.changePage(UserSettingsPage)
+    this.props.changePage(UserSettingsPage, this.props.inputs)
   }
-
   render() {
     return (
       <div className="App">
-        <div className="back-button" onClick={this.onBackClick}></div>
-        <div > To get to work by: {this.props.inputs.getToWorkTime}</div>
-        <h1> Best Route </h1>
-        {this.state.routes && <Route
-                  type={this.state.maxRoute.type}
-                  score={this.state.maxRoute.state.score}
-                  duration={this.state.maxRoute.state.duration}
-                  updateRoutes={this.updateRoutes}
-                  isBest="True"
-                 />}
-        <h1>Other Routes</h1>
-        {this.state.routes && <RouteList
-          routes={this.state.routes}
-          onClick={this.handleClick}
-          updateRoutes={this.updateRoutes}
-        />}
-      {this.state.routes &&  <DirectionsMapsComponent isMarkerShown={true}
-        isMarkerShown
-        googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-        loadingElement={<div style={{ height: `100%` }} />}
-        containerElement={<div style={{ height: `400px` }} />}
-        mapElement={<div style={{ height: `100%` }} />}
-        origin={this.props.inputs.origin}
-        destination={this.props.inputs.destination}
-        travelMode={typeToMode[this.state.maxRoute.type]}
-        />}
+      <div className="back-button" onClick={this.onBackClick}></div>  
+      {this.state.routes ?  (
+        <div>
+          <div> To get to work by: {this.props.inputs.getToWorkTime}</div>
+          <h1> Best Route </h1>
+          <Route
+            type={this.state.maxRoute.type}
+            score={this.state.maxRoute.state.score}
+            duration={this.state.maxRoute.state.duration}
+            updateRoutes={this.updateRoutes}
+            isBest="True"
+          />
+          <h1>Other Routes</h1>
+          <RouteList
+            routes={this.state.routes}
+            onClick={this.handleClick}
+            updateRoutes={this.updateRoutes}
+          />
+          <DirectionsMapsComponent isMarkerShown={true}
+            isMarkerShown
+            googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+            loadingElement={<div style={{ height: `100%` }} />}
+            containerElement={<div style={{ height: `400px` }} />}
+            mapElement={<div style={{ height: `100%` }} />}
+            origin={this.props.inputs.origin}
+            destination={this.props.inputs.destination}
+            travelMode={typeToMode[this.state.maxRoute.type]}
+          />
+        </div>
+      ) :(
+        <div>Error! {this.state.error ? this.state.error.status : "Error"}</div>
+      )}
       </div>
-
 
     );
   }

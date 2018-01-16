@@ -18,12 +18,16 @@ var routeIconKeys = {
 export class UserSettingsPage extends Component {
     constructor(props){
         super(props)
-        this.state = {
-            getToWorkTime: "16:14",//new Date("October 13, 2014 11:13:00").getTime(),
-            wakeuptime: new Date(),
-            destination: "",
-            origin: "",
-          }
+        if(props.inputs){
+          this.state = props.inputs
+        }else{
+          this.state = {
+              getToWorkTime: "16:14",//new Date("October 13, 2014 11:13:00").getTime(),
+              wakeuptime: new Date(),
+              destination: "",
+              origin: "",
+            }
+        }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
