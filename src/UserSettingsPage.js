@@ -22,8 +22,7 @@ export class UserSettingsPage extends Component {
           this.state = props.inputs
         }else{
           this.state = {
-              getToWorkTime: "16:14",//new Date("October 13, 2014 11:13:00").getTime(),
-              wakeuptime: new Date(),
+              getToWorkTime: new Date("October 13, 2014 11:13:00").getTime(),
               destination: "",
               origin: "",
             }

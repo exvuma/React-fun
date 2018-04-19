@@ -41,8 +41,7 @@ export class RoutesPage extends Component {
         state: {
           score: 0,
           duration: 0
-        },
-      googresp : ""
+        }
       }
     }
   }
@@ -51,39 +50,44 @@ export class RoutesPage extends Component {
     // more variable later (e.g. preference for biking..)
     return  1000 - duration ;
   }
+  secsToMins = (secs) => {
+    return Math.floor(secs / 60);
+  }
   getGoogleRoutes =  () => {
     var directionsService = new google.maps.DirectionsService();
     var origin = this.props.inputs.origin
     var destination = this.props.inputs.destination
-    let promiseArr =  Promise.all(transportConstants.map(  (route) => {
+    return  Promise.all(transportConstants.map((route) => {
       var request = {
         origin: origin,
         destination: destination,
-        travelMode: typeToMode[route.type]
+        travelMode: typeToMode[route.type],
+        // drivingOptions: {
+        //   arrivalTime: this.props.inputs.getToWorkTime,
+        // }
       };
       // turn directionsService.route into a new Promise that we can then explicity
       // tell to resolve/reject. This way we can use Promise.all to ensure that 
       // all those directionsService.routes are finished
-       return new Promise((resolve, reject) => 
-          {
-             directionsService.route(request, (result, status) => {
-                  if (status == 'OK') {
-                    console.log("resyots!!")
-                    // return {type:route.type, "state": {"score": this.calculateScore(dur) , "duration": dur }}
-              
-                    let dur  = result.routes[0].legs[0].duration.text
-                    let val = result.routes[0].legs[0].duration.value
-                    return resolve({type:route.type, "state": {"score": this.calculateScore(val) , "duration": dur }})
-                  }
-                  else{
-                    console.log("error with Google")
-                    reject(result)
-                    return  {type:"bike", "state": {"score": 20 , "duration": 12 }}
-                  }
-                })
-          })
+      return new Promise((resolve, reject) => 
+      {
+        directionsService.route(request, (result, status) => {
+          if (status == 'OK') {
+            console.log("resyots!!")
+            // return {type:route.type, "state": {"score": this.calculateScore(dur) , "duration": dur }}
+            console.log(result)
+            let dur  = result.routes[0].legs[0].duration.text
+            let val = result.routes[0].legs[0].duration.value//value indicates the duration in seconds.
+
+            return resolve({type:route.type, "state": {"score": this.calculateScore(val) , "duration": this.secsToMins(val) }})
+          }
+          else{
+            reject(result)
+            return  {type:"bike", "state": {"score": 20 , "duration": 12 }}
+          }
+        })
+      })
     }))
-    return promiseArr
   }
   updateRoutes = (state,type)=> {
     //updates Routes with a new state of type = type
@@ -99,9 +103,14 @@ export class RoutesPage extends Component {
           {type:curRoute.type, state:curRoute.state}
         )
     }, this.state.maxRoute)
+    console.log("leave home")
+    console.log( this.props.inputs.getToWorkTime)
+    console.log(max.state.duration)
+    let leaveHomeTime = this.props.inputs.getToWorkTime - max.state.duration
     this.setState({
       routes: newRoutes,
       maxRoute: max,
+      leaveHomeTime: leaveHomeTime, 
       maxRouteScore: max.state.score,
       googresp: this.state.googresp
     })
@@ -117,6 +126,7 @@ export class RoutesPage extends Component {
       {this.state.routes ?  (
         <div>
           <div> To get to work by: {this.props.inputs.getToWorkTime}</div>
+          <div> Leave at: {this.state.leaveHomeTime}</div>
           <h1> Best Route </h1>
           <Route
             type={this.state.maxRoute.type}

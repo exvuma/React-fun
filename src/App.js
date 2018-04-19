@@ -17,7 +17,7 @@ class App extends Component {
       currPage: RoutesPage,
       type: "bike",
       "lastPageInputs":{
-          getToWorkTime: "16:14",//new Date("October 13, 2014 11:13:00").getTime(),
+          getToWorkTime: new Date("October 13, 2014 11:13:00").getTime(),
           wakeuptime: new Date(),
           destination: "2900 manor rd. , 74722",
           origin: "600 congress ave",
